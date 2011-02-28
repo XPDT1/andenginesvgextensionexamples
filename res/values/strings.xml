@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+<string name="app_name">SVG Loader Examples</string>
+<string name="svg1">Rects</string>
+<string name="svg2">Pacmans</string>
+<string name="svg3">Fun</string><string name="svgmenutitle">choose a svg</string>
+<string name="loader_msg">Loading SVG</string>
+
+</resources>

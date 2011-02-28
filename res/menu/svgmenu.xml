@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/svg1" android:title="@string/svg1" />
+        <item android:id="@+id/svg2" android:title="@string/svg2" />
+        <item android:id="@+id/svg3" android:title="@string/svg3" />
+    </group>
+</menu>
