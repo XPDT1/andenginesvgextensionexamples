@@ -111,6 +111,7 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		this.mSVGScene.setBackground(new ColorBackground(1,1,1));
 		
 		//-- SVG
+		this.mSVGDoc = new SVGDoc(this, this.mPhysicsWorld, this.mEngine.getTextureManager());
 		this.loadSVG();
 		
 		//-- Controls
@@ -162,8 +163,8 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 	private void loadSVG(){
 		try {
 			this.removeDoc();
-			final SVGLoader svgLoader = new SVGLoader(this, this.mPhysicsWorld, this.mEngine.getTextureManager());
-			this.mSVGDoc = svgLoader.loadFromAsset(this, this.mExamples.get(this.checked_menu_item));
+			final SVGLoader svgLoader = new SVGLoader(this.mSVGDoc);
+			svgLoader.loadFromAsset(this.mExamples.get(this.checked_menu_item));
 			this.onLoadSVG();
 		} catch (final SVGLoadException svgle) {
 			Debug.e(svgle);
@@ -171,10 +172,7 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 	}
 	
 	private void removeDoc(){
-		if(this.mSVGDoc!=null){
-			this.mSVGDoc.removeAllBodyAndShapes(this.mSVGScene.getLastChild());
-			this.mSVGDoc = null;
-		}
+		this.mSVGDoc.removeAllBodyAndShapes(this.mSVGScene.getLastChild());
 	}
 	
     private void onLoadSVG(){
