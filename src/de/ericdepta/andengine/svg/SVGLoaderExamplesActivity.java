@@ -113,6 +113,7 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		//-- SVG
 		this.mSVGDoc = new SVGDoc(this, this.mPhysicsWorld, this.mEngine.getTextureManager());
 		this.loadSVG();
+		this.mSVGScene.attachChild(this.mSVGDoc);
 		
 		//-- Controls
 		//--- speed
@@ -172,12 +173,11 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 	}
 	
 	private void removeDoc(){
-		this.mSVGDoc.removeAllBodyAndShapes(this.mSVGScene.getLastChild());
+		this.mSVGDoc.removeElements();
 	}
 	
     private void onLoadSVG(){
-    	this.mSVGDoc.addShapesEntities(this.mSVGScene.getLastChild());
-		this.mBallBody = this.mSVGDoc.getBody("Ball");
+		this.mBallBody = this.mSVGDoc.getElement("Ball").getBody();
 	}
     
 	@Override
