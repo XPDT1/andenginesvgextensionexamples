@@ -21,6 +21,7 @@ import org.anddev.andengine.extension.input.touch.controller.MultiTouchControlle
 import org.anddev.andengine.extension.input.touch.controller.MultiTouchException;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.extension.svg.SVGDoc;
+import org.anddev.andengine.extension.svg.SVGElement;
 import org.anddev.andengine.extension.svg.SVGLoader;
 import org.anddev.andengine.extension.svg.util.exception.SVGLoadException;
 import org.anddev.andengine.opengl.texture.Texture;
@@ -31,6 +32,7 @@ import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
 
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -112,6 +114,11 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		
 		//-- SVG
 		this.mSVGDoc = new SVGDoc(this, this.mPhysicsWorld, this.mEngine.getTextureManager());
+		//this.mSVGDoc = new SVGDoc(this, this.mEngine.getTextureManager()); //- without physic (PhysicsHandler still possible)
+		//this.mSVGDoc = new SVGDoc(this, this.mPhysicsWorld); //- without sprites
+		//this.mSVGDoc = new SVGDoc(this); //- without sprites and physics
+		//this.mSVGDoc.setDebug(true, true); //- Debug Mode (fill and line)
+		
 		this.loadSVG();
 		this.mSVGScene.attachChild(this.mSVGDoc);
 		
@@ -177,7 +184,12 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 	}
 	
     private void onLoadSVG(){
-		this.mBallBody = this.mSVGDoc.getElement("Ball").getBody();
+    	final SVGElement ball = this.mSVGDoc.getElement("Ball");
+    	if(ball != null){
+    		this.mBallBody = this.mSVGDoc.getElement("Ball").getBody();
+    	}else{
+    		this.mBallBody = null;
+    	}
 	}
     
 	@Override
