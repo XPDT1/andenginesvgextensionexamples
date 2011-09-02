@@ -18,21 +18,20 @@ import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.extension.input.touch.controller.MultiTouch;
 import org.anddev.andengine.extension.input.touch.controller.MultiTouchController;
-import org.anddev.andengine.extension.input.touch.controller.MultiTouchException;
+import org.anddev.andengine.extension.input.touch.exception.MultiTouchException;
 import org.anddev.andengine.extension.physics.box2d.PhysicsWorld;
 import org.anddev.andengine.extension.svg.SVGDoc;
 import org.anddev.andengine.extension.svg.SVGElement;
 import org.anddev.andengine.extension.svg.SVGLoader;
 import org.anddev.andengine.extension.svg.util.exception.SVGLoadException;
-import org.anddev.andengine.opengl.texture.Texture;
 import org.anddev.andengine.opengl.texture.TextureOptions;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TextureRegionFactory;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.Debug;
 
 import android.hardware.SensorManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -46,7 +45,7 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 	private Camera mCamera;
 	private boolean mPlaceOnScreenControlsAtDifferentVerticalLocations;
 	private PhysicsWorld mPhysicsWorld;
-	private Texture mOnScreenControlTexture;
+	private BitmapTextureAtlas mOnScreenControlTexture;
 	private TextureRegion mOnScreenControlBaseTextureRegion;
 	private TextureRegion mOnScreenControlKnobTextureRegion;
 	
@@ -56,9 +55,9 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 	private Vector2 mTmpVec = new Vector2(0,0);
 	
 	private int checked_menu_item = R.id.svg1;
-	private SVGExamples mExamples = new SVGExamples(); 
+	private SVGExamples mExamples = new SVGExamples();
 	
-	@Override
+
 	public Engine onLoadEngine() {
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		
@@ -93,24 +92,22 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		
 		return engine;
 	}
-	
-	@Override
+
 	public void onLoadResources() {
-		TextureRegionFactory.setAssetBasePath("gfx/");
 		//-- Controls
-		this.mOnScreenControlTexture = new Texture(256, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-		this.mOnScreenControlBaseTextureRegion = TextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "onscreen_control_base.png", 0, 0);
-		this.mOnScreenControlKnobTextureRegion = TextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "onscreen_control_knob.png", 128, 0);
+		this.mOnScreenControlTexture = new BitmapTextureAtlas(256, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+		this.mOnScreenControlBaseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "gfx/onscreen_control_base.png", 0, 0);
+		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "gfx/onscreen_control_knob.png", 128, 0);
 		
 		this.mEngine.getTextureManager().loadTextures(this.mOnScreenControlTexture);
 	}
-	
-	@Override
+
 	public Scene onLoadScene() {
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 		
-		this.mSVGScene = new Scene(1);
+		this.mSVGScene = new Scene();
 		this.mSVGScene.setBackground(new ColorBackground(1,1,1));
+		
 		
 		//-- SVG
 		this.mSVGDoc = new SVGDoc(this, this.mPhysicsWorld, this.mEngine.getTextureManager());
@@ -121,6 +118,7 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		
 		this.loadSVG();
 		this.mSVGScene.attachChild(this.mSVGDoc);
+		this.mSVGScene.registerUpdateHandler(this.mPhysicsWorld);
 		
 		//-- Controls
 		//--- speed
@@ -142,7 +140,7 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		velocityOnScreenControl.getControlBase().setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		velocityOnScreenControl.getControlBase().setAlpha(0.5f);
 		this.mSVGScene.setChildScene(velocityOnScreenControl);
-
+		
 		//--- impulse
 		final int y2 = (this.mPlaceOnScreenControlsAtDifferentVerticalLocations) ? 0 : y1;
 		final int x2 = CAMERA_WIDTH - this.mOnScreenControlBaseTextureRegion.getWidth();
@@ -163,7 +161,6 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		rotationOnScreenControl.getControlBase().setAlpha(0.5f);
 		velocityOnScreenControl.setChildScene(rotationOnScreenControl);
 		
-		this.mSVGScene.registerUpdateHandler(this.mPhysicsWorld);
 		
 		return this.mSVGScene;
 	}
@@ -186,13 +183,12 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
     private void onLoadSVG(){
     	final SVGElement ball = this.mSVGDoc.getElement("Ball");
     	if(ball != null){
-    		this.mBallBody = this.mSVGDoc.getElement("Ball").getBody();
+    		this.mBallBody = ball.getBody();
     	}else{
     		this.mBallBody = null;
     	}
 	}
-    
-	@Override
+
 	public void onLoadComplete() {}
 	
 	
