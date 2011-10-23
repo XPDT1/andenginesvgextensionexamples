@@ -111,6 +111,7 @@ public class SVGLoaderExamplesActivity extends BaseGameActivity {
 		
 		//-- SVG
 		this.mSVGDoc = new SVGDoc(this, this.mPhysicsWorld, this.mEngine.getTextureManager());
+		//this.mSVGDoc.setLineAntiAlias(true); //Anti Aliasing but only 1px line width
 		//this.mSVGDoc = new SVGDoc(this, this.mEngine.getTextureManager()); //- without physic (PhysicsHandler still possible)
 		//this.mSVGDoc = new SVGDoc(this, this.mPhysicsWorld); //- without sprites
 		//this.mSVGDoc = new SVGDoc(this); //- without sprites and physics
